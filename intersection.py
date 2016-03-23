@@ -79,11 +79,11 @@ def mouseFun(button,state,x,y):
 	#print("mouse at x = " + str(x) + " y = " + str(y))
 	if button==GLUT_LEFT_BUTTON and state == GLUT_DOWN:
 		for r in retas:
-			if ((x-3 <= r.x1 <= x+3) and ((480-y-3) <= r.y1 <= (480-y+3))):
+			if ((x-3 <= r.x1 <= x+3) and ((y-3) <= r.y1 <= (y+3))):
 				posSaved = {retas.index(r):1}
 				#print(posSaved)
 				movendo = True
-			elif ((x-3 <= r.x2 <= x+3) and ((480-y-3) <= r.y2 <= (480-y+3))):
+			elif ((x-3 <= r.x2 <= x+3) and ((y-3) <= r.y2 <= (y+3))):
 				posSaved = {retas.index(r):2}
 				#print(posSaved)
 				movendo = True
@@ -92,12 +92,12 @@ def mouseFun(button,state,x,y):
 			if (posSaved.values()[0] == 1):
 				#print("movendo reta 1 para x = " + str(x) + " y = " + str(y))
 				retas[posSaved.keys()[0]].x1 = x
-				retas[posSaved.keys()[0]].y1 = 480 - y
+				retas[posSaved.keys()[0]].y1 = y
 				movendo = False
 			elif (posSaved.values()[0] == 2):
 				#print("movendo reta 2 para x = " + str(x) + " y = " + str(y))
 				retas[posSaved.keys()[0]].x2 = x
-				retas[posSaved.keys()[0]].y2 = 480 - y
+				retas[posSaved.keys()[0]].y2 = y
 				movendo = False
 	glutPostRedisplay()
 
@@ -107,16 +107,22 @@ def mouseMovement(x,y):
 		if (posSaved.values()[0] == 1):
 			#print("movendo reta 1 para x = " + str(x) + " y = " + str(y))
 			retas[posSaved.keys()[0]].x1 = x
-			retas[posSaved.keys()[0]].y1 = 480 - y
+			retas[posSaved.keys()[0]].y1 = y
 		elif (posSaved.values()[0] == 2):
 			#print("movendo reta 2 para x = " + str(x) + " y = " + str(y))
 			retas[posSaved.keys()[0]].x2 = x
-			retas[posSaved.keys()[0]].y2 = 480 - y
+			retas[posSaved.keys()[0]].y2 = y
 
 	glutPostRedisplay()
 
 def resize(w,h):
-	glutReshapeWindow(640,480)
+	#glutReshapeWindow(640,480)
+	glViewport(0, 0, w, h)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	gluOrtho2D(0.0, w, h, 0.0)
+	glMatrixMode(GL_MODELVIEW)
+	glutPostRedisplay()
 
 if __name__ == '__main__':
 	r=Reta(310,310,400,400)
@@ -127,7 +133,7 @@ if __name__ == '__main__':
 	glutInit()
 	glutInitWindowSize(640,480)
 	glutCreateWindow("Polyline")
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
 	glutDisplayFunc(displayFun)
 	glutMouseFunc(mouseFun)
 	glutMotionFunc(mouseMovement)
